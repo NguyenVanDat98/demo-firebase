@@ -1,0 +1,90 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+
+  min-width: 320px;
+  min-height: 100vh;
+}
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+
+.wiget-container{
+  border: 0.1px solid white;
+  overflow: hidden;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+
+}
+.wiget-container .nav-bar{
+  width: clamp(150px, 100%, 30%);
+  background-color: rgb(249, 243, 232);
+  display: flex;
+  color: #1a1a1a;
+  flex-direction: column;
+  cursor: pointer;
+}
+.wiget-container .main{
+  flex-grow: 1 ;
+
+  width: 100%;
+  background-color: rgb(187, 245, 179);
+  scroll-snap-type: y mandatory;
+  margin-right: -23px;
+  padding-right: 23px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+.wiget-container .main .content-item{
+  scroll-snap-align: center;
+  color: #213547;
+  background: rgb(2,0,36);
+background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(255,255,255,0) 0%, rgba(231,231,231,0.13911502100840334) 91%, rgba(228,228,228,0.4584427521008403) 100%);
+}
+.nav-item{
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.nav-item:hover{
+  background-color: rgb(180, 218, 246);
+}
+.wiget-container .scroll-bar{
+  width: 21px;
+  max-width: 21px;
+  display: flex;
+  position: relative;
+}
+.scroll-bar .track{
+  position: absolute;
+  top: 0;
+  height: 50px;
+  background-color: #535bf2;
+  width: 100%;
+  transition: all 0.2s ease-in-out;
+}
