@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
-import { Button } from "antd";
+import { Avatar, Button } from "antd";
 import Firebase from "./firebase"
 import { User } from "firebase/auth";
 
@@ -149,12 +149,35 @@ async function handleLogin (){
     <>
       <h1>Hello</h1>
       <div>
-      <h1>
-        {!userLogin&&<Button onClick={handleLogin}>Login with Google</Button>}
-        {userLogin && <Button onClick={Firebase.signOut(()=>setUser(null))}>Logout Google</Button>}
-      </h1>
-
-    </div>
+        <h3>
+          {!userLogin && (
+            <Button type="primary" onClick={handleLogin}>
+              Login with Google
+            </Button>
+          )}
+          {userLogin && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap:20
+              }}
+            >
+              <Avatar style={{width:100,height:100}} src={userLogin?.photoURL} />
+              <span>{userLogin?.displayName}</span>
+              <Button
+                danger
+                type="dashed"
+                onClick={Firebase.signOut(() => setUser(null))}
+              >
+                Logout Google
+              </Button>
+            </div>
+          )}
+        </h3>
+      </div>
 
       <div
         className="wiget-container"
@@ -169,12 +192,14 @@ async function handleLogin (){
               className="nav-item"
               onClick={() => {
                 setIndexActive(idx * ref.current);
-                trust.current = idx
-                const el = refMain.current?.getElementsByClassName('index'+idx)
+                trust.current = idx;
+                const el = refMain.current?.getElementsByClassName(
+                  "index" + idx
+                );
                 el?.[0]?.scrollIntoView({
-                  behavior:'smooth',
-                  block:'start'
-                 })
+                  behavior: "smooth",
+                  block: "start",
+                });
               }}
             >
               {title}
@@ -184,11 +209,11 @@ async function handleLogin (){
         <div className="scroll-bar">
           <div className="track" style={{ height, top: indexActive }}></div>
         </div>
-        <div className="main" ref={refMain} >
+        <div className="main" ref={refMain}>
           {Jsondata.map(({ decs }, index) => (
             <div
-              className={["content-item" ,'index'+index].join(' ')}
-              style={{ height: refNav.current?.offsetHeight}}
+              className={["content-item", "index" + index].join(" ")}
+              style={{ height: refNav.current?.offsetHeight }}
             >
               <h3>{index}</h3>
               {/* <video 
