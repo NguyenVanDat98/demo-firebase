@@ -21,7 +21,7 @@ const debName = {
     config:"Config",
 } satisfies Record<string,string>;
 
-class Firebase {
+class FirebaseStatic {
     static config: FirebaseOptions = {
         apiKey: "AIzaSyC0bnWQppWIWMShNGtqNcvtC9AMpW35Yr0",
         authDomain: "todo-app-4c16b.firebaseapp.com",
@@ -30,51 +30,52 @@ class Firebase {
         messagingSenderId: "625088009840",
         appId: "1:625088009840:web:f6265758790526d98ac6b5",
         measurementId: "G-6K8ZFBCHND",
-        // databaseURL: "https://todo-app-4c16b-default-rtdb.asia-southeast1.firebasedatabase.app/"
       }
     static instance: Firebase
-    app:FirebaseApp
-    auth:Auth;
+
+    static getInstance(){
+        if(!FirebaseStatic.instance){
+            FirebaseStatic.instance = new Firebase();
+        }
+        return FirebaseStatic.instance
+    }
+}
+
+
+class Firebase extends FirebaseStatic {
+    #app:FirebaseApp
+    #auth:Auth;
     dbClient: Firestore;
-    provider:GoogleAuthProvider
+    #provider: GoogleAuthProvider;
     async signIn () : Promise<UserCredential>{
-        return await signInWithPopup(this.auth,this.provider)
+        return await signInWithPopup(this.#auth,this.#provider)
     } 
     async signInWithToken (token:string) : Promise<UserCredential>{
-        return await signInWithCustomToken(this.auth,token)
+        return await signInWithCustomToken(this.#auth,token)
     } 
     signOut(callback:()=>void){
-        return ()=>signOut(this.auth).then(callback)
+        return ()=>signOut(this.#auth).then(callback)
     }
     onAuthStateChanged (callback:NextOrObserver<User>) {
-       return onAuthStateChanged(this.auth,callback)
+       return onAuthStateChanged(this.#auth,callback)
     }
-    getColl = (nameCollection:string)=>collection(this.dbClient, nameCollection);
+    getColl (nameCollection:string){ return collection(this.dbClient, nameCollection)};
     async fetchData() {
         const citiesRef = this.getColl(debName.user);
-        const arr:UserSchema[] = [];
-        (await getDocs(citiesRef)).forEach((val)=>{
-            arr.push(val.data() as UserSchema  );
-        })
-        return arr
+        return  (await getDocs(citiesRef)).docs.map((doc)=>({ id: doc.id, ...doc.data()}))
     }
     async setDocUser (body:UserSchema){
        return await setDoc( doc(this.getColl(debName.user), v4() ), body);
     }
     constructor(){
-        this.app = initializeApp(Firebase.config)
-        this.dbClient = getFirestore(this.app);
-        this.auth = getAuth(this.app);
-        this.provider = new GoogleAuthProvider();
+        super();
+        this.#app = initializeApp(FirebaseStatic.config)
+        this.dbClient = getFirestore(this.#app);
+        this.#auth = getAuth(this.#app);
+        this.#provider = new GoogleAuthProvider();
 
     }
 
-    static getInstance(){
-        if(!Firebase.instance){
-            Firebase.instance = new Firebase();
-        }
-        return Firebase.instance
-    }
 }
 
-export default Firebase.getInstance();
+export default FirebaseStatic.getInstance();
